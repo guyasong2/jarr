@@ -1,42 +1,48 @@
 // server/routers/newsletter.ts
-import { sql } from "@vercel/postgres";
 import { z } from "zod";
+import { supabaseAdmin } from "../supabaseClient";
 
 const subscribeSchema = z.object({
   email: z.string().email(),
 });
 
-export type SubscribeInput = z.infer<typeof subscribeSchema>;
+export type SubscribeResult = {
+  success: boolean;
+  already: boolean;
+};
 
-export async function subscribeToNewsletter(input: unknown) {
-  // 1. Validate input
+export async function subscribeToNewsletter(
+  input: unknown
+): Promise<SubscribeResult> {
   const { email } = subscribeSchema.parse(input);
 
-  // 2. Ensure table exists (idempotent)
-  await sql`
-    CREATE TABLE IF NOT EXISTS newsletter_subscribers (
-      id SERIAL PRIMARY KEY,
-      email TEXT UNIQUE NOT NULL,
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-    );
-  `;
+  // 1. Check if email already exists
+  const { data: existing, error: selectError } = await supabaseAdmin
+    .from("newsletter_subscribers")
+    .select("id")
+    .eq("email", email)
+    .limit(1)
+    .maybeSingle();
 
-  // 3. Insert (ignore if email already exists)
-  await sql`
-    INSERT INTO newsletter_subscribers (email)
-    VALUES (${email})
-    ON CONFLICT (email) DO NOTHING;
-  `;
+  if (selectError) {
+    console.error("Supabase select error (newsletter):", selectError);
+    throw selectError;
+  }
 
-  return { success: true };
-}
+  if (existing) {
+    // Already subscribed
+    return { success: true, already: true };
+  }
 
-// Optional: list subscribers (for an admin dashboard)
-export async function listNewsletterSubscribers() {
-  const { rows } = await sql`
-    SELECT id, email, created_at
-    FROM newsletter_subscribers
-    ORDER BY created_at DESC;
-  `;
-  return rows;
+  // 2. Insert new subscriber
+  const { error: insertError } = await supabaseAdmin
+    .from("newsletter_subscribers")
+    .insert({ email });
+
+  if (insertError) {
+    console.error("Supabase insert error (newsletter):", insertError);
+    throw insertError;
+  }
+
+  return { success: true, already: false };
 }

@@ -15,6 +15,10 @@ export default function Home() {
     seconds: 30,
   });
 
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "already" | "error"
+  >("idle");
+
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -51,21 +55,32 @@ export default function Home() {
   const email = formData.get("email");
 
   try {
+    setStatus("loading");
+
     const res = await fetch("/api/newsletter", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
 
+    const data = await res.json().catch(() => ({} as any));
+
     if (!res.ok) {
-      throw new Error("Request failed");
+      console.error("Newsletter API error:", res.status, data);
+      setStatus("error");
+      return;
     }
 
-    alert("Thank you for signing up!");
+    if (data.already) {
+      setStatus("already");
+    } else {
+      setStatus("success");
+    }
+
     form.reset();
   } catch (error) {
     console.error(error);
-    alert("Something went wrong. Please try again.");
+    setStatus("error");
   }
 };
 
@@ -112,7 +127,8 @@ export default function Home() {
                 href="#"
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Jarr on Instagram">
+                aria-label="Jarr on Instagram"
+              >
                 <FaInstagram className="text-3xl sm:text-2xl" />
               </a>
               <a
@@ -121,21 +137,23 @@ export default function Home() {
                 rel="noreferrer"
                 aria-label="Jarr on Twitter"
               >
-                <FaTwitter className="text-3xl sm:text-2xl"/>
+                <FaTwitter className="text-3xl sm:text-2xl" />
               </a>
               <a
                 href="#"
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Jarr on LinkedIn">
-                <FaLinkedin className="text-3xl sm:text-2xl"/>
+                aria-label="Jarr on LinkedIn"
+              >
+                <FaLinkedin className="text-3xl sm:text-2xl" />
               </a>
               <a
                 href="#"
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Jarr on LinkedIn">
-                <FaFacebook className="text-3xl sm:text-2xl"/>
+                aria-label="Jarr on LinkedIn"
+              >
+                <FaFacebook className="text-3xl sm:text-2xl" />
               </a>
             </nav>
           </div>
@@ -167,9 +185,11 @@ export default function Home() {
 
           {/* Subheading */}
           <p className="text-center text-xl md:text-2xl text-[#1A3A28] max-w-xl mb-8">
-            Almost there! If you want to be notified when the website goes live, subscribe to our mailing list.
+            Almost there! If you want to be notified when the website goes live,
+            subscribe to our mailing list.
           </p>
 
+          {/* Email form */}
           {/* Email form */}
           <form
             onSubmit={handleSubmit}
@@ -184,11 +204,31 @@ export default function Home() {
             />
             <button
               type="submit"
-              className="bg-[#2D5A3D] cursor-pointer text-white px-8 py-2 font-bold text-sm md:text-base tracking-wide shadow-[0_4px_0_0_rgba(0,0,0,0.4)] hover:bg-[#1A3A28] transition whitespace-nowrap"
+              disabled={status === "loading"}
+              className="bg-[#2D5A3D] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed text-white px-8 py-2 font-bold text-sm md:text-base tracking-wide shadow-[0_4px_0_0_rgba(0,0,0,0.4)] hover:bg-[#1A3A28] transition whitespace-nowrap"
             >
-              NOTIFY ME!
+              {status === "loading" ? "Submitting..." : "NOTIFY ME!"}
             </button>
           </form>
+
+          {status === "success" && (
+            <p className="mt-3 text-sm text-emerald-900 bg-emerald-100 border border-emerald-300 px-4 py-2 rounded">
+              Thanks for subscribing! We&apos;ll let you know when Jarr
+              launches.
+            </p>
+          )}
+
+          {status === "already" && (
+            <p className="mt-3 text-sm text-amber-900 bg-amber-100 border border-amber-300 px-4 py-2 rounded">
+              You&apos;re already on the list. We&apos;ll keep you posted!
+            </p>
+          )}
+
+          {status === "error" && (
+            <p className="mt-3 text-sm text-red-900 bg-red-100 border border-red-300 px-4 py-2 rounded">
+              Something went wrong. Please try again.
+            </p>
+          )}
         </div>
 
         {/* Footer */}
