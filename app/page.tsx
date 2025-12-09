@@ -133,7 +133,7 @@ export default function Home() {
                 rel="noreferrer"
                 aria-label="Jarr on Instagram"
               >
-                <FaInstagram className="text-3xl sm:text-2xl" />
+                <FaInstagram className="text-xl sm:text-2xl" />
               </a>
               <a
                 href="https://x.com/Jarr_cm"
@@ -141,7 +141,7 @@ export default function Home() {
                 rel="noreferrer"
                 aria-label="Jarr on Twitter"
               >
-                <FaTwitter className="text-3xl sm:text-2xl" />
+                <FaTwitter className="text-xl sm:text-2xl" />
               </a>
               <a
                 href="https://www.linkedin.com/company/jarr-cm/?lipi=urn%3Ali%3Apage%3Ad_flagship3_search_srp_companies%3BKfIZilhJTKKA2fmrONid2Q%3D%3D"
@@ -149,7 +149,7 @@ export default function Home() {
                 rel="noreferrer"
                 aria-label="Jarr on LinkedIn"
               >
-                <FaLinkedin className="text-3xl sm:text-2xl" />
+                <FaLinkedin className="text-xl sm:text-2xl" />
               </a>
               <a
                 href="https://www.facebook.com/profile.php?id=61584765691734"
@@ -157,7 +157,7 @@ export default function Home() {
                 rel="noreferrer"
                 aria-label="Jarr on Facebook"
               >
-                <FaFacebook className="text-3xl sm:text-2xl" />
+                <FaFacebook className="text-xl sm:text-2xl" />
               </a>
 
               <a
@@ -166,7 +166,7 @@ export default function Home() {
                 rel="noreferrer"
                 aria-label="Jarr on Tiktok"
               >
-                <FaTiktok className="text-3xl sm:text-2xl" />
+                <FaTiktok className="text-xl sm:text-2xl" />
               </a>
               
             </nav>
