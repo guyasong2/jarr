@@ -3,49 +3,53 @@
 import type React from "react";
 import { useState, useEffect, FormEvent } from "react";
 import Image from "next/image";
-import { FaInstagram, FaTwitter, FaLinkedin, FaFacebook } from "react-icons/fa";
+import { FaInstagram, FaTwitter, FaLinkedin, FaFacebook, FaTiktok } from "react-icons/fa";
 import logo from "@/public/Jarr-Transparent-Logo.webp";
 import afriback from "@/public/green-geometric-patterned-background.svg";
 
+
+const TARGET_DATE = new Date("2026-02-05T00:00:00Z").getTime(); 
+type TimeLeft = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
+function calculateTimeLeft(): TimeLeft {
+  const now = Date.now();
+  const diff = TARGET_DATE - now;
+
+  if (diff <= 0) {
+    return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  }
+
+  const totalSeconds = Math.floor(diff / 1000);
+  const days = Math.floor(totalSeconds / (60 * 60 * 24));
+  const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
+  const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+  const seconds = totalSeconds % 60;
+
+  return { days, hours, minutes, seconds };
+}
+
+
 export default function Home() {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 52,
-    hours: 18,
-    minutes: 30,
-    seconds: 30,
-  });
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+  
 
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "already" | "error"
   >("idle");
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        let { days, hours, minutes, seconds } = prev;
-
-        if (seconds > 0) {
-          seconds--;
-        } else if (minutes > 0) {
-          minutes--;
-          seconds = 59;
-        } else if (hours > 0) {
-          hours--;
-          minutes = 59;
-          seconds = 59;
-        } else if (days > 0) {
-          days--;
-          hours = 23;
-          minutes = 59;
-          seconds = 59;
-        }
-
-        return { days, hours, minutes, seconds };
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
   e.preventDefault();
@@ -105,7 +109,7 @@ export default function Home() {
       </div>
 
       {/* Content layer */}
-      <div className="relative z-10 min-h-screen flex flex-col justify-center text-center mx-auto w-[90%] sm:w-[70%] mt-[50px] sm:mt-0">
+      <div className="relative z-10 min-h-screen flex flex-col justify-center text-center mx-auto w-[90%] sm:w-[70%] mt-[50px] sm:mt-0 md:mt-12">
         {/* Header / Navbar (centered) */}
         <header className="fixed top-0 left-1/2 -translate-x-1/2 z-50 w-full flex px-2 justify-between items-center backdrop-blur-sm">
           <div className="flex items-center justify-between w-full sm:w-[70%] mx-auto">
@@ -124,7 +128,7 @@ export default function Home() {
             <nav className="flex items-center gap-6 sm:gap-6 text-white">
               {/* Replace `#` with your actual URLs */}
               <a
-                href="#"
+                href="https://www.instagram.com/jarr.cm0/"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Jarr on Instagram"
@@ -132,7 +136,7 @@ export default function Home() {
                 <FaInstagram className="text-3xl sm:text-2xl" />
               </a>
               <a
-                href="#"
+                href="https://x.com/Jarr_cm"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Jarr on Twitter"
@@ -140,7 +144,7 @@ export default function Home() {
                 <FaTwitter className="text-3xl sm:text-2xl" />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/company/jarr-cm/?lipi=urn%3Ali%3Apage%3Ad_flagship3_search_srp_companies%3BKfIZilhJTKKA2fmrONid2Q%3D%3D"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Jarr on LinkedIn"
@@ -148,13 +152,23 @@ export default function Home() {
                 <FaLinkedin className="text-3xl sm:text-2xl" />
               </a>
               <a
-                href="#"
+                href="https://www.facebook.com/profile.php?id=61584765691734"
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Jarr on LinkedIn"
+                aria-label="Jarr on Facebook"
               >
                 <FaFacebook className="text-3xl sm:text-2xl" />
               </a>
+
+              <a
+                href="https://www.tiktok.com/@jarr.cm0"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Jarr on Tiktok"
+              >
+                <FaTiktok className="text-3xl sm:text-2xl" />
+              </a>
+              
             </nav>
           </div>
         </header>
