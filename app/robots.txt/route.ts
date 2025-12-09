@@ -2,7 +2,7 @@
 export function GET() {
   const body = `User-agent: *
 Allow: /
-Sitemap: https://jarr-cm.vercel.app/sitemap.xml
+Sitemap: https://jarr-cm.vercel.app/sitemaps.xml
 `;
 
   return new Response(body, {
