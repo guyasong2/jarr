@@ -125,7 +125,7 @@ export default function Home() {
             </div>
 
             {/* Social media icons */}
-            <nav className="flex items-center gap-6 sm:gap-6 text-white">
+            <nav className="flex items-center gap-4 sm:gap-6 text-white">
               {/* Replace `#` with your actual URLs */}
               <a
                 href="https://www.instagram.com/jarr.cm0/"
