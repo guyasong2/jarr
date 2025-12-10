@@ -1,14 +1,12 @@
 "use client";
 
-import type React from "react";
 import { useState, useEffect, FormEvent } from "react";
+import Link from "next/link";
 import Image from "next/image";
-import { FaInstagram, FaTwitter, FaLinkedin, FaFacebook, FaTiktok } from "react-icons/fa";
-import logo from "@/public/Jarr-Transparent-Logo.webp";
 import afriback from "@/public/green-geometric-patterned-background.svg";
 
+const TARGET_DATE = new Date("2026-02-05T00:00:00Z").getTime();
 
-const TARGET_DATE = new Date("2026-02-05T00:00:00Z").getTime(); 
 type TimeLeft = {
   days: number;
   hours: number;
@@ -33,7 +31,6 @@ function calculateTimeLeft(): TimeLeft {
   return { days, hours, minutes, seconds };
 }
 
-
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft);
 
@@ -44,49 +41,47 @@ export default function Home() {
 
     return () => clearInterval(timer);
   }, []);
-  
 
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "already" | "error"
   >("idle");
 
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const form = e.currentTarget;
-  const formData = new FormData(form);
-  const email = formData.get("email");
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const email = formData.get("email");
 
-  try {
-    setStatus("loading");
+    try {
+      setStatus("loading");
 
-    const res = await fetch("/api/newsletter", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
-    const data = await res.json().catch(() => ({} as any));
+      const data = await res.json().catch(() => ({} as any));
 
-    if (!res.ok) {
-      console.error("Newsletter API error:", res.status, data);
+      if (!res.ok) {
+        console.error("Newsletter API error:", res.status, data);
+        setStatus("error");
+        return;
+      }
+
+      if (data.already) {
+        setStatus("already");
+      } else {
+        setStatus("success");
+      }
+
+      form.reset();
+    } catch (error) {
+      console.error(error);
       setStatus("error");
-      return;
     }
-
-    if (data.already) {
-      setStatus("already");
-    } else {
-      setStatus("success");
-    }
-
-    form.reset();
-  } catch (error) {
-    console.error(error);
-    setStatus("error");
-  }
-};
+  };
 
   const timerBlocks = [
     { value: timeLeft.days, label: "Days" },
@@ -110,69 +105,6 @@ export default function Home() {
 
       {/* Content layer */}
       <div className="relative z-10 min-h-screen flex flex-col justify-center text-center mx-auto w-[90%] sm:w-[70%] mt-[50px] sm:mt-0 md:mt-12">
-        {/* Header / Navbar (centered) */}
-        <header className="fixed top-0 left-1/2 -translate-x-1/2 z-50 w-full flex px-2 justify-between items-center backdrop-blur-sm">
-          <div className="flex items-center justify-between w-full sm:w-[70%] mx-auto">
-            <div>
-              <Image
-                src={logo}
-                alt="JARR Logo"
-                width={400}
-                height={400}
-                priority
-                className="h-32 sm:h-44 md:h-44 w-auto"
-              />
-            </div>
-
-            {/* Social media icons */}
-            <nav className="flex items-center gap-4 sm:gap-6 text-white">
-              {/* Replace `#` with your actual URLs */}
-              <a
-                href="https://www.instagram.com/jarr.cm0/"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Jarr on Instagram"
-              >
-                <FaInstagram className="text-xl sm:text-2xl" />
-              </a>
-              <a
-                href="https://x.com/Jarr_cm"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Jarr on Twitter"
-              >
-                <FaTwitter className="text-xl sm:text-2xl" />
-              </a>
-              <a
-                href="https://www.linkedin.com/company/jarr-cm/?lipi=urn%3Ali%3Apage%3Ad_flagship3_search_srp_companies%3BKfIZilhJTKKA2fmrONid2Q%3D%3D"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Jarr on LinkedIn"
-              >
-                <FaLinkedin className="text-xl sm:text-2xl" />
-              </a>
-              <a
-                href="https://www.facebook.com/profile.php?id=61584765691734"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Jarr on Facebook"
-              >
-                <FaFacebook className="text-xl sm:text-2xl" />
-              </a>
-
-              <a
-                href="https://www.tiktok.com/@jarr.cm0"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Jarr on Tiktok"
-              >
-                <FaTiktok className="text-xl sm:text-2xl" />
-              </a>
-              
-            </nav>
-          </div>
-        </header>
-
         {/* Main content */}
         <div className="flex-1 flex flex-col items-center justify-center">
           {/* Countdown */}
@@ -203,7 +135,6 @@ export default function Home() {
             subscribe to our mailing list.
           </p>
 
-          {/* Email form */}
           {/* Email form */}
           <form
             onSubmit={handleSubmit}
@@ -245,9 +176,14 @@ export default function Home() {
           )}
         </div>
 
-        {/* Footer */}
-        <footer className="pb-6 text-center text-[#1A3A28] font-semibold text-xs">
-          Jarr. All Rights Reserved 2025
+        <footer className="pb-6 text-center text-[#1A3A28] text-xs flex flex-col sm:flex-row items-center justify-center gap-2">
+          <span className="font-semibold">Jarr. All Rights Reserved 2025</span>
+          <Link
+            href="/about"
+            className="underline hover:text-[#2D5A3D] font-medium"
+          >
+            About Jarr
+          </Link>
         </footer>
       </div>
     </main>

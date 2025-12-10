@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import Navbar from "./components/Navbar";
 import "./globals.css";
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -10,7 +11,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 // app/layout.tsx
 export const metadata: Metadata = {
-  title: "Jarr - AI Study App for Past Papers & Exam Prep",
+  title: "Jarr - Study smarter, not harder",
   description:
     "Jarr is an AI-powered study platform that helps students in Africa prepare for exams using past papers, summaries, flashcards and quizzes.",
   metadataBase: new URL("https://jarr-cm.vercel.app/"), 
@@ -54,6 +55,7 @@ export default function RootLayout({
             }),
           }}
         />
+        <Navbar/>
         {children}
         <Analytics />
         <SpeedInsights />
