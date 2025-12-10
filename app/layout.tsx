@@ -10,30 +10,22 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 // app/layout.tsx
 export const metadata: Metadata = {
-  title: "Jarr – AI Study App for Past Papers & Exam Prep",
+  title: "Jarr - AI Study App for Past Papers & Exam Prep",
   description:
     "Jarr is an AI-powered study platform that helps students in Africa prepare for exams using past papers, summaries, flashcards and quizzes.",
-  metadataBase: new URL("https://jarr-cm.vercel.app/"), // update with real domain
+  metadataBase: new URL("https://jarr-cm.vercel.app/"), 
   openGraph: {
     title: "Jarr – AI Study App for Past Papers & Exam Prep",
     description:
       "Use Jarr to find past exam papers, get AI-generated notes, flashcards and quizzes, and study smarter.",
     url: "https://jarr-cm.vercel.app/",
     siteName: "Jarr",
-    images: [
-      {
-        url: "/jarr-logo.png", // create a nice image in /public
-        width: 1200,
-        height: 630,
-      },
-    ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Jarr – AI Study App for Past Papers & Exam Prep",
+    title: "Jarr - AI Study App for Past Papers & Exam Prep",
     description: "AI + past papers to help students study smarter in Africa.",
-    images: ["/jarr-logo.png"],
   },
 };
 
